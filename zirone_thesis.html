@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Between Data and Place — Giampaolo Zirone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faint: #8a8a8a;
+      --bg:        #faf9f7;
+      --surface:   #ffffff;
+      --accent:    #2c4a6e;
+      --accent-lt: #e8eef5;
+      --rule:      #e0ddd8;
+      --max-w:     760px;
+      --pad-x:     clamp(1.25rem, 5vw, 3rem);
+      --pad-y:     clamp(3rem, 8vw, 6rem);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.9375rem, 1.6vw, 1.0625rem);
+      line-height: 1.75;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Layout helpers ───────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    /* ─── Header / Hero ────────────────────────────────────────────────── */
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding-block: var(--pad-y);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: .65;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 5.5vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    header h1 em {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      margin-top: 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 300;
+      opacity: .7;
+      letter-spacing: 0.03em;
+    }
+
+    /* ─── Main article area ────────────────────────────────────────────── */
+    main {
+      padding-block: var(--pad-y);
+    }
+
+    article { position: relative; }
+
+    /* Section label above first paragraph */
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      padding: 0.3em 0.75em;
+      border: 1px solid var(--accent-lt);
+      border-radius: 2px;
+      background: var(--accent-lt);
+    }
+
+    article p {
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+
+    article p:last-of-type { margin-bottom: 0; }
+
+    /* Pull quote / research questions block */
+    .research-questions {
+      margin-block: 2.5rem;
+      padding: 1.75rem 2rem;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-lt);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .research-questions p {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      line-height: 1.8;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .research-questions p:last-child { margin-bottom: 0; }
+
+    /* Footnotes section */
+    .footnotes {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .footnotes h2 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 1rem;
+    }
+
+    .footnotes ol {
+      padding-left: 1.25rem;
+    }
+
+    .footnotes li {
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--ink-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .footnotes li em { font-style: italic; }
+
+    sup {
+      font-size: 0.65em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ─── Divider ──────────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin-block: 0;
+    }
+
+    /* ─── Feedback Form Section ─────────────────────────────────────────── */
+    .form-section {
+      background: var(--surface);
+      padding-block: var(--pad-y);
+      border-top: 1px solid var(--rule);
+    }
+
+    .form-section .container { max-width: var(--max-w); }
+
+    .form-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .form-header .section-label { margin-bottom: 1rem; }
+
+    .form-header h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .form-header p {
+      color: var(--ink-light);
+      font-size: 0.95rem;
+      max-width: 520px;
+    }
+
+    /* Form layout */
+    form {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    label .required { color: var(--accent); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--rule);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(44, 74, 110, 0.12);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--ink-faint);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 160px;
+      line-height: 1.6;
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .privacy-note {
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      max-width: 340px;
+      line-height: 1.5;
+    }
+
+    button[type="submit"] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    button[type="submit"]:hover {
+      background: #1e3450;
+      box-shadow: 0 4px 16px rgba(44, 74, 110, 0.3);
+    }
+
+    button[type="submit"]:active { transform: translateY(1px); }
+
+    /* Success message (shown via JS) */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2.5rem;
+      border: 1.5px solid #c6deb8;
+      border-radius: 8px;
+      background: #f4faf0;
+    }
+
+    .form-success h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.375rem;
+      color: #2d6a1f;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-success p {
+      font-size: 0.9rem;
+      color: #4a7a38;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,.45);
+      padding-block: 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+
+    footer strong { color: rgba(255,255,255,.8); font-weight: 500; }
+
+    /* ─── Responsive ───────────────────────────────────────────────────── */
+
+    /* Tablet (≤ 768px) */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .research-questions {
+        padding: 1.25rem 1.25rem;
+      }
+    }
+
+    /* Mobile (≤ 480px) */
+    @media (max-width: 480px) {
+      :root {
+        --pad-x: 1.125rem;
+        --pad-y: 2.5rem;
+      }
+
+      .header-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 1.75rem;
+      }
+
+      .research-questions {
+        padding: 1rem;
+        border-left-width: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="container">
+      <div class="header-meta">
+        <span>Giampaolo Zirone</span>
+        <span>MA User Experience Design</span>
+      </div>
+      <h1>Between Data and Place:<br><em>Reading the Territory</em></h1>
+      <p class="header-subtitle">Master's Thesis Abstract &mdash; 2026</p>
+    </div>
+  </header>
+
+  <!-- ── ABSTRACT ──────────────────────────────────────────────────────── -->
+  <main>
+    <div class="container">
+      <article>
+        <span class="section-label">Abstract</span>
+
+        <p>
+          Living in a territory means continuously constructing a representation of it: through daily
+          experience, memory, relationships, and, increasingly, data. Yet between the information
+          available and people's ability to interpret and use it, there exists a profound gap — fuelled
+          by distrust, poor digital literacy, and limited civic participation. This gap is not neutral:
+          it produces <em>data deserts</em><sup>1</sup>, where lack of awareness generates inequalities
+          and less effective services.
+        </p>
+
+        <p>
+          The project aims to explore how citizens integrate quantitative data with local knowledge,
+          mental maps, and lived territorial experience to imagine scenarios of adaptation and
+          transformation.
+        </p>
+
+        <p>
+          The provisional research question guiding this design idea unfolds across interconnected
+          levels:
+        </p>
+
+        <div class="research-questions">
+          <p>
+            How can a narrative information interface, designed from local territorial data, be structured
+            so that it does not simply translate data into images, but puts them in dialogue with the
+            memory, experience, and local knowledge of the community?
+          </p>
+          <p>
+            To what extent does emotional and relational anchoring to a lived space act as a lever
+            capable of reducing cognitive distance from data and motivating active community
+            participation?
+          </p>
+          <p>
+            And finally: how can a co-design process transform visualisation from an analytical output
+            into a space for negotiating collective meaning, reinforcing cohesion and belonging?
+          </p>
+        </div>
+
+        <p>
+          Starting from a specific territorial context and a limited sample, the project adopts a mixed
+          approach: qualitative field research, co-design sessions with the local community, and
+          analysis of the socio-cultural dynamics that structure the reading of the territory. The
+          territory is therefore understood not as mere physical space, but as an interweaving of
+          relationships, practices, memories, and values<sup>2</sup> — dimensions that affect belonging,
+          identity, and conflict.
+        </p>
+
+        <p>
+          In a landscape dominated by <em>data-driven decision making</em>, a deliberate choice is
+          made for a <em>data-informed</em><sup>3</sup> approach, in which data dialogues with
+          qualitative research and the designer's critical judgement. Visualisation is not an aesthetic
+          or analytical output, but a form of <em>data fabric</em><sup>4</sup>: an informational fabric
+          redesigned in its meaning, which makes data understandable and usable by those who inhabit
+          that territory. Working at a local scale lowers cognitive defences, increases motivation to
+          participate, and allows the <em>sense of place</em><sup>5</sup> to act as an emotional lever,
+          generating engagement that abstract or national data can rarely produce.
+        </p>
+
+        <p>
+          The ultimate goal is not to build a visualisation, but a <em>narrative interface</em><sup>6</sup>
+          through which the community can interrogate its own space, compare perspectives, and decide
+          together. Because people do not simply "read" a chart: they negotiate collective
+          meaning<sup>7</sup>.
+        </p>
+
+        <!-- Footnotes -->
+        <div class="footnotes">
+          <h2>References</h2>
+          <ol>
+            <li>
+              Einav, L. and Levin, J. (2024) 'Data Deserts and Black Boxes: The Impact of
+              Socio-Economic Status on Consumer Profiling', <em>Management Science</em>. INFORMS.
+            </li>
+            <li>
+              Tuan, Y.-F. (1977) <em>Space and Place: The Perspective of Experience</em>.
+              Minneapolis: University of Minnesota Press.
+            </li>
+            <li>
+              Northwestern University Medill IMC Professional (2023) <em>Data as Inspiration,
+              Not Just Information: Data-Driven vs. Data-Informed</em>. [Online]
+            </li>
+            <li>
+              Blohm, I. and Wortmann, F. (2023) 'Data products, data mesh, and data fabric',
+              <em>Semantic Scholar</em>.
+            </li>
+            <li>
+              Tuan, Y.-F. (1977) <em>Space and Place: The Perspective of Experience</em>.
+              Minneapolis: University of Minnesota Press.
+            </li>
+            <li>
+              Segel, E. and Heer, J. (2010) 'Narrative Visualization: Telling Stories with Data',
+              <em>IEEE Transactions on Visualization and Computer Graphics</em>, 16(6), pp.&nbsp;1139–1148.
+            </li>
+            <li>
+              Carmi, E. et al. (2020) 'Participation in a datafied environment: questions about data
+              literacy', <em>Civitas</em>. OpenEdition Journals.
+            </li>
+          </ol>
+        </div>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- ── FEEDBACK FORM ─────────────────────────────────────────────────── -->
+  <!--
+    HOW TO ENABLE EMAIL DELIVERY
+    ─────────────────────────────
+    This form uses Formspree (https://formspree.io) — a free service that
+    forwards form submissions to your email address.
+
+    Steps:
+      1. Go to https://formspree.io and create a free account.
+      2. Create a new form and copy your unique endpoint, e.g.:
+           https://formspree.io/f/xpwzabcd
+      3. Replace the action attribute below:
+           <form action="https://formspree.io/f/maqvgepz" ...>
+      4. Formspree will send every submission to the email you registered with.
+
+    The free tier allows 50 submissions/month. No backend or server needed.
+  -->
+  <section class="form-section" id="feedback">
+    <div class="container">
+
+      <div class="form-header">
+        <span class="section-label">Share your thoughts</span>
+        <h2>Leave a comment or feedback</h2>
+        <p>
+          Read the abstract? I'd love to hear your perspective — whether it's a reflection,
+          a question, or a critique. Every response helps shape the research.
+        </p>
+      </div>
+
+      <!-- SUCCESS MESSAGE (shown after submit) -->
+      <div class="form-success" id="form-success">
+        <h3>Thank you for your message.</h3>
+        <p>Your feedback has been received and will be reviewed shortly.</p>
+      </div>
+
+      <!--
+        ↓ Replace "https://formspree.io/f/YOUR_FORM_ID" with your Formspree endpoint ↓
+      -->
+      <form
+        action="https://formspree.io/f/maqvgepz"
+        method="POST"
+        id="feedback-form"
+        novalidate
+      >
+
+        <!-- Hidden field so Formspree knows the subject line -->
+        <input type="hidden" name="_subject" value="Thesis feedback — Between Data and Place" />
+
+        <div class="form-row">
+          <div class="field">
+            <label for="first-name">First name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="first-name"
+              name="first_name"
+              placeholder="Anna"
+              required
+              autocomplete="given-name"
+            />
+          </div>
+          <div class="field">
+            <label for="last-name">Last name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="last-name"
+              name="last_name"
+              placeholder="Rossi"
+              required
+              autocomplete="family-name"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email address <span class="required">*</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="anna.rossi@example.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="field">
+          <label for="message">Comment or feedback <span class="required">*</span></label>
+          <textarea
+            id="message"
+            name="message"
+            placeholder="Share your thoughts on the research, questions, or reflections..."
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-footer">
+          <p class="privacy-note">
+            Your data will be used solely to respond to your message and will not be shared
+            with third parties.
+          </p>
+          <button type="submit">Send feedback &rarr;</button>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2026 <strong>Giampaolo Zirone</strong> &mdash; MA User Experience Design
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPT: show success message after Formspree redirect ──────────── -->
+  <script>
+    const form = document.getElementById('feedback-form');
+    const success = document.getElementById('form-success');
+
+    // Intercept submit for client-side success feedback
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const data = new FormData(form);
+      const action = form.getAttribute('action');
+
+      // Guard: warn if endpoint hasn't been configured yet
+      if (action.includes('YOUR_FORM_ID')) {
+        alert(
+          'Form not yet configured.\n\n' +
+          'Please replace "YOUR_FORM_ID" in the form action attribute\n' +
+          'with your Formspree endpoint (see the HTML comments for instructions).'
+        );
+        return;
+      }
+
+      try {
+        const res = await fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          success.style.display = 'block';
+          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          const json = await res.json();
+          const msg = json.errors
+            ? json.errors.map(e => e.message).join(', ')
+            : 'Something went wrong. Please try again.';
+          alert(msg);
+        }
+      } catch {
+        alert('Network error. Please check your connection and try again.');
+      }
+    });
+  </script>
+
+</body>
+</html>
